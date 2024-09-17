@@ -1,0 +1,79 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        // test
+        {
+            "name": "Launch - test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "",
+            "linux": {
+                "program": "/usr/bin/env",
+                "args": [
+                    "godot",
+                    "--headless",
+                    // "--verbose",
+                    "--path",
+                    "${workspaceFolder}/godot/test",
+                    // "-s",
+                    // "src/test.gd"
+                ],
+            },
+            "cwd": "${workspaceFolder}",
+        },
+        {
+            "name": "Launch Editor - test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "",
+            "linux": {
+                "program": "/usr/bin/env",
+                "args": [
+                    "godot",
+                    "--editor",
+                    // "--verbose",
+                    "--path",
+                    "${workspaceFolder}/godot/test"
+                ],
+            },
+            "cwd": "${workspaceFolder}",
+        },
+        // app
+        {
+            "name": "Launch - app",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "",
+            "linux": {
+                "program": "/usr/bin/env",
+                "args": [
+                    "godot",
+                    "--verbose",
+                    "--path",
+                    "${workspaceFolder}/godot/app",
+                ],
+            },
+            "cwd": "${workspaceFolder}",
+        },
+        {
+            "name": "Launch Editor - app",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "",
+            "linux": {
+                "program": "/usr/bin/env",
+                "args": [
+                    "godot",
+                    "--editor",
+                    // "--verbose",
+                    "--path",
+                    "${workspaceFolder}/godot/app"
+                ],
+            },
+            "cwd": "${workspaceFolder}",
+        },
+    ],
+}
