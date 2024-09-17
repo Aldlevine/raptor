@@ -1,3 +1,5 @@
+#include "rptr_grid/rptr_grid.hpp"
+
 #include <godot_cpp/godot.hpp>
 
 namespace rptr::gdextension
@@ -8,6 +10,8 @@ namespace rptr::gdextension
         {
             return;
         }
+
+        godot::ClassDB::register_class<RptrGrid>();
     }
 
     void terminate_extension(godot::ModuleInitializationLevel p_level)
