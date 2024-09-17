@@ -16,4 +16,5 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 include(FetchContent)
 set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/_deps")
 
+add_subdirectory(gdextension "${CMAKE_BINARY_DIR}/gdextension")
 add_subdirectory(raptor "${CMAKE_BINARY_DIR}/raptor")

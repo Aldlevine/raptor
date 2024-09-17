@@ -1,0 +1,13 @@
+[configuration]
+
+entry_symbol = "rptr_library_init"
+compatibility_minimum = "4.3"
+
+[icons]
+RptrGrid = "icons/grid.svg"
+RptrGridRenderer = "icons/grid_renderer.svg"
+
+[libraries]
+
+linux.debug.x86_64 = "linux.debug.x86_64.so"
+linux.release.x86_64 = "linux.release.x86_64.so"
