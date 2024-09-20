@@ -1,6 +1,6 @@
 #pragma once
 
-#include "aabb.hpp"
-#include "index.hpp"
-#include "integer_division.hpp"
-#include "vector.hpp"
+#include "aabb.hpp" // IWYU pragma: export
+#include "index.hpp" // IWYU pragma: export
+#include "integer_division.hpp" // IWYU pragma: export
+#include "vector.hpp" // IWYU pragma: export
