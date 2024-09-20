@@ -2,10 +2,9 @@
 
 #include "repr/repr.hpp"
 
-#include <stdint.h>
+#include <array>
 #include <cmath>
 #include <cstdint>
-#include <format>
 
 #define VECTOR_FOLD(...) /*************************/ \
     [&]<size_t... I>(std::index_sequence<I...>)      \
@@ -33,7 +32,7 @@ namespace rptr::math
                 {
                     Element x;
                 };
-                Element v[Size]{};
+                std::array<Element, Size> v{};
             };
         };
 
@@ -48,7 +47,7 @@ namespace rptr::math
                     Element x;
                     Element y;
                 };
-                Element v[Size]{};
+                std::array<Element, Size> v{};
             };
         };
 
@@ -64,7 +63,7 @@ namespace rptr::math
                     Element y;
                     Element z;
                 };
-                Element v[Size]{};
+                std::array<Element, Size> v{};
             };
         };
 
@@ -81,7 +80,7 @@ namespace rptr::math
                     Element z;
                     Element w;
                 };
-                Element v[Size]{};
+                std::array<Element, Size> v{};
             };
         };
 
@@ -94,15 +93,8 @@ namespace rptr::math
 
         constexpr Vector() = default;
 
-        constexpr Vector(const Vector &) = default;
-        This &operator=(const This &) = default;
-
-        constexpr Vector(Vector &&) = default;
-        This &operator=(This &&) = default;
-
         template <typename OtherElement>
-        // cppcheck-suppress[noExplicitConstructor]; implicit conversion
-        constexpr Vector(const Vector<OtherElement, Size> &p_other)
+        constexpr Vector(const Vector<OtherElement, Size> &p_other) // NOLINT(*-explicit-constructor)
         {
             VECTOR_FOLD(
                 ((this->v[I] = p_other.v[I]), ...); //
@@ -110,7 +102,7 @@ namespace rptr::math
         }
 
         template <typename... Elements>
-        constexpr Vector(Elements... p_v)
+        constexpr Vector(Elements... p_v) // NOLINT(*-explicit-constructor)
             requires(sizeof...(Elements) == Size)
         {
             VECTOR_FOLD(
@@ -125,14 +117,9 @@ namespace rptr::math
             );
         }
 
-        constexpr const Element &operator[](size_t p_index) const
+        constexpr auto &&operator[](this auto &&self, size_t p_index)
         {
-            return this->v[p_index];
-        }
-
-        constexpr Element &operator[](size_t p_index)
-        {
-            return this->v[p_index];
+            return self.v[p_index];
         }
 
         constexpr bool operator==(const This &p_other) const
@@ -266,6 +253,38 @@ namespace rptr::math
         );
     }
 
+    template <typename Element, size_t Size>
+    inline constexpr Vector<Element, Size> ceil(const Vector<Element, Size> &p_vector)
+    {
+        return VECTOR_FOLD(
+            return Vector<Element, Size>{ std::ceil(p_vector.v[I])... }; //
+        );
+    }
+
+    template <typename Element, size_t Size>
+    inline constexpr Vector<Element, Size> floor(const Vector<Element, Size> &p_vector)
+    {
+        return VECTOR_FOLD(
+            return Vector<Element, Size>{ std::floor(p_vector.v[I])... }; //
+        );
+    }
+
+    template <typename Element, size_t Size>
+    inline constexpr Vector<Element, Size> round(const ::rptr::math::Vector<Element, Size> &p_vector)
+    {
+        return VECTOR_FOLD(
+            return Vector<Element, Size>{ std::round(p_vector.v[I])... }; //
+        );
+    }
+
+    template <typename Element, size_t Size>
+    inline constexpr Vector<Element, Size> abs(const ::rptr::math::Vector<Element, Size> &p_vector)
+    {
+        return VECTOR_FOLD(
+            return Vector<Element, Size>{ std::abs(p_vector.v[I])... }; //
+        );
+    }
+
     using Vector2u8 = Vector<uint8_t, 2>;
     using Vector3u8 = Vector<uint8_t, 3>;
     using Vector4u8 = Vector<uint8_t, 4>;
@@ -320,7 +339,6 @@ namespace rptr::repr
                                                                                             : "";
         p_repr.push_scope("Vector" + std::to_string(Size) + suffix);
 
-        // cppcheck-suppress[syntaxError]; False positive
         constexpr auto get_field_name = [&]<size_t I>(std::index_sequence<I> i)
         {
             if constexpr (Size <= 4)
@@ -338,63 +356,5 @@ namespace rptr::repr
     }
 
 } // namespace rptr::repr
-
-namespace std
-{
-    template <typename Element, size_t Size>
-    inline constexpr ::rptr::math::Vector<Element, Size> ceil(const ::rptr::math::Vector<Element, Size> &p_vector)
-    {
-        return VECTOR_FOLD(
-            return ::rptr::math::Vector<Element, Size>{ std::ceil(p_vector.v[I])... }; //
-        );
-    }
-
-    template <typename Element, size_t Size>
-    inline constexpr ::rptr::math::Vector<Element, Size> floor(const ::rptr::math::Vector<Element, Size> &p_vector)
-    {
-        return VECTOR_FOLD(
-            return ::rptr::math::Vector<Element, Size>{ std::floor(p_vector.v[I])... }; //
-        );
-    }
-
-    template <typename Element, size_t Size>
-    inline constexpr ::rptr::math::Vector<Element, Size> round(const ::rptr::math::Vector<Element, Size> &p_vector)
-    {
-        return VECTOR_FOLD(
-            return ::rptr::math::Vector<Element, Size>{ std::round(p_vector.v[I])... }; //
-        );
-    }
-
-    template <typename Element, size_t Size>
-    inline constexpr ::rptr::math::Vector<Element, Size> abs(const ::rptr::math::Vector<Element, Size> &p_vector)
-    {
-        return VECTOR_FOLD(
-            return ::rptr::math::Vector<Element, Size>{ std::abs(p_vector.v[I])... }; //
-        );
-    }
-
-    template <typename Element>
-    inline constexpr Element signum(const Element &p_element)
-    {
-        if (p_element > 0)
-        {
-            return Element{ 1 };
-        }
-        if (p_element < 0)
-        {
-            return Element{ -1 };
-        }
-        return p_element;
-    }
-
-    template <typename Element, size_t Size>
-    inline constexpr ::rptr::math::Vector<Element, Size> signum(const ::rptr::math::Vector<Element, Size> &p_vector)
-    {
-        return VECTOR_FOLD(
-            return ::rptr::math::Vector<Element, Size>{ std::signum(p_vector.v[I])... }; //
-        );
-    }
-
-} //namespace std
 
 #undef VECTOR_FOLD
