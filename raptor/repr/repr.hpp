@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstring>
 #include <string>
 #include <vector>
 
@@ -37,34 +36,32 @@ namespace rptr::repr
     class Repr
     {
     public:
-        bool indent = false;
-
         explicit Repr(bool p_indent = false) :
-            indent(p_indent)
+            m_indent{ p_indent }
         {
         }
 
         Repr &push_scope(const std::string &p_name = "")
         {
-            m_commands.emplace_back(Command{ PUSH_SCOPE, p_name });
+            m_commands.emplace_back(Command{ .type = PUSH_SCOPE, .value = p_name });
             return *this;
         }
 
         Repr &pop_scope()
         {
-            m_commands.emplace_back(Command{ POP_SCOPE });
+            m_commands.emplace_back(Command{ .type = POP_SCOPE });
             return *this;
         }
 
         Repr &push_field(const std::string &p_name)
         {
-            m_commands.emplace_back(Command{ PUSH_FIELD, p_name });
+            m_commands.emplace_back(Command{ .type = PUSH_FIELD, .value = p_name });
             return *this;
         }
 
         Repr &push_value(const std::string &p_value)
         {
-            m_commands.emplace_back(Command{ PUSH_VALUE, p_value });
+            m_commands.emplace_back(Command{ .type = PUSH_VALUE, .value = p_value });
             return *this;
         }
 
@@ -90,7 +87,7 @@ namespace rptr::repr
             return *this;
         }
 
-        operator std::string() const
+        explicit operator std::string() const
         {
             std::string result{};
             size_t current_depth{ 0 };
@@ -103,7 +100,7 @@ namespace rptr::repr
                         result += it->value;
                         result += "(";
 
-                        if (indent)
+                        if (m_indent)
                         {
                             current_depth += 4;
                             result += "\n" + std::string(current_depth, ' ');
@@ -112,7 +109,7 @@ namespace rptr::repr
                         break;
 
                     case POP_SCOPE:
-                        if (indent)
+                        if (m_indent)
                         {
                             current_depth -= 4;
                         }
@@ -123,7 +120,7 @@ namespace rptr::repr
                         {
                             result += ", ";
 
-                            if (indent)
+                            if (m_indent)
                             {
                                 result += "\n" + std::string(current_depth, ' ');
                             }
@@ -142,7 +139,7 @@ namespace rptr::repr
                         {
                             result += ", ";
 
-                            if (indent)
+                            if (m_indent)
                             {
                                 result += "\n" + std::string(current_depth, ' ');
                             }
@@ -156,11 +153,13 @@ namespace rptr::repr
 
     protected:
     private:
+        bool m_indent = false;
+
         std::vector<Command> m_commands{};
 
-        bool needs_comma(
+        static bool needs_comma(
             const std::vector<Command>::const_iterator &p_cur,
-            const std::vector<Command>::const_iterator &p_end) const
+            const std::vector<Command>::const_iterator &p_end)
         {
             const auto &next = std::next(p_cur);
             return (next != p_end && next->type != POP_SCOPE);
@@ -170,7 +169,7 @@ namespace rptr::repr
     template <typename Type>
     inline Repr to_repr(const Type &p_object, Repr &&p_repr)
     {
-        return to_repr(p_object, p_repr);
+        return to_repr(p_object, std::move(p_repr));
     }
 
     template <typename Type>
