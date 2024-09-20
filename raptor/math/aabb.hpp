@@ -4,8 +4,6 @@
 
 #include "repr/repr.hpp"
 
-#include <format>
-
 namespace rptr::math
 {
     template <typename Element>
@@ -16,41 +14,35 @@ namespace rptr::math
         Element position;
         Element size;
 
-        AABB() = default;
+        constexpr AABB() = default;
 
-        AABB(const AABB &) = default;
-        This &operator=(const This &) = default;
-
-        AABB(AABB &&) = default;
-        This &operator=(This &&) = default;
-
-        AABB(const Element &p_position, const Element &p_size) :
+        constexpr AABB(const Element &p_position, const Element &p_size) :
             position(p_position), size(p_size)
         {
         }
 
         template <typename OtherElement>
-        AABB(const AABB<OtherElement> &p_other) :
+        constexpr AABB(const AABB<OtherElement> &p_other) : // NOLINT(*-explicit-constructor)
             position(p_other.position), size(p_other.size)
         {
         }
 
-        bool operator==(const This &p_other) const
+        constexpr bool operator==(const This &p_other) const
         {
             return position == p_other.position && size == p_other.size;
         }
 
-        bool operator!=(const This &p_other) const
+        constexpr bool operator!=(const This &p_other) const
         {
             return !(*this == p_other);
         }
 
-        Element get_end() const
+        constexpr Element get_end() const
         {
             return position + size;
         }
 
-        This intersection(const This &p_aabb) const
+        constexpr This intersection(const This &p_aabb) const
         {
             Element src_min = position;
             Element src_max = position + size;
@@ -92,7 +84,7 @@ namespace rptr::math
             return This{ min, max - min };
         }
 
-        bool encloses(const This &p_aabb) const
+        constexpr bool encloses(const This &p_aabb) const
         {
             const Element &src_min = position;
             const Element &src_max = position + size;
@@ -104,7 +96,7 @@ namespace rptr::math
                     (src_min.z <= dst_min.z) && (src_max.z >= dst_max.z));
         }
 
-        bool has_point(const Element &p_point) const
+        constexpr bool has_point(const Element &p_point) const
         {
             const Element &begin = position;
             const Element &end = position + size;

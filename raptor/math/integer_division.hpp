@@ -5,7 +5,7 @@
 namespace rptr::math
 {
     template <std::integral Int>
-    Int floor_div(Int p_lhs, Int p_rhs)
+    constexpr Int floor_div(Int p_lhs, Int p_rhs)
     {
         Int result = p_lhs / p_rhs;
         if (p_lhs % p_rhs < 0)
@@ -16,7 +16,7 @@ namespace rptr::math
     }
 
     template <std::integral Int, size_t t_size>
-    math::Vector<Int, t_size> floor_div(
+    constexpr math::Vector<Int, t_size> floor_div(
         const math::Vector<Int, t_size> &p_lhs,
         const math::Vector<Int, t_size> &p_rhs)
     {
@@ -27,7 +27,7 @@ namespace rptr::math
     }
 
     template <std::integral Int>
-    Int ceil_div(Int p_lhs, Int p_rhs)
+    constexpr Int ceil_div(Int p_lhs, Int p_rhs)
     {
         Int result = p_lhs / p_rhs;
         if (p_lhs % p_rhs > 0)
@@ -38,7 +38,7 @@ namespace rptr::math
     }
 
     template <std::integral Int, size_t t_size>
-    math::Vector<Int, t_size> ceil_div(
+    constexpr math::Vector<Int, t_size> ceil_div(
         const math::Vector<Int, t_size> &p_lhs,
         const math::Vector<Int, t_size> &p_rhs)
     {
